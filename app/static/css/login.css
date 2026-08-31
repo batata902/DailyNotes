@@ -1,0 +1,131 @@
+@charset "UTF-8";
+
+:root {
+    --bg-main: #0A0A0A;
+    --text-main: #FFFFFF;
+    --brand-highlight: #FF4D4D;
+    --bg-surface: #161616;
+    --border-color: #2A2A2A;
+    --text-secondary: #A0A0A0;
+    --font-family: 'Inter', 'Helvetica Neue', 'Roboto', sans-serif;
+    --spacing-1: 8px;
+    --spacing-2: 16px;
+    --spacing-3: 24px;
+    --spacing-4: 32px;
+    --spacing-6: 48px;
+    --spacing-8: 64px;
+    --touch-target: 44px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: var(--font-family);
+    line-height: 1.6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+    padding: var(--spacing-2);
+}
+
+.login-wrapper {
+    width: 100%;
+    max-width: 420px;
+    background-color: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    padding: var(--spacing-6);
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--brand-highlight);
+    margin-bottom: var(--spacing-1);
+    text-align: center;
+}
+
+.login-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--spacing-4);
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-1);
+    margin-bottom: var(--spacing-3);
+}
+
+label {
+    font-size: 14px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+input[type="email"], input[type="password"] {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    min-height: var(--touch-target);
+    padding: 0 var(--spacing-2);
+    font-family: inherit;
+    border-radius: 0;
+    transition: border-color 0.2s ease;
+    width: 100%;
+}
+
+input:focus-visible {
+    outline: none;
+    border-color: var(--brand-highlight);
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: var(--touch-target);
+    padding: 0 var(--spacing-3);
+    font-weight: 700;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    text-align: center;
+    border-radius: 0;
+    width: 100%;
+}
+
+.btn-primary {
+    background-color: var(--brand-highlight);
+    color: #000000;
+    margin-top: var(--spacing-2);
+}
+
+.btn-primary:hover {
+    background-color: #ff6b6b;
+}
+
+.back-link {
+    display: block;
+    text-align: center;
+    margin-top: var(--spacing-3);
+    font-size: 14px;
+    color: var(--text-secondary);
+    text-decoration: none;
+}
+
+.back-link:hover {
+    color: var(--brand-highlight);
+}

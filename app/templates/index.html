@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DailyNotes - Informação precisa, análises profundas e os fatos do dia.</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}">
+</head>
+<body>
+
+    <!-- 1. CABEÇALHO & BARRA DE NAVEGAÇÃO -->
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="logo"><a href="{{ url_for('home') }}">DailyNotes</a></div>
+                <div class="tagline">Informação precisa, análises profundas e os fatos do dia.</div>
+                <button class="menu-toggle" aria-label="Abrir menu" id="menuBtn">☰</button>
+            </div>
+            
+            <div class="nav-wrapper">
+                <nav class="main-nav" id="mainNav">
+                    <ul>
+                        {% for c in categories %}
+                        <li><a href="{{ url_for('category', id=c.id) }}">{{ c.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+                <div class="nav-utils" id="navUtils">
+                    <a href="{{ url_for('search') }}" class="btn btn-secondary" aria-label="Buscar">Busca</a>
+                    <a href="#newsletter" class="btn btn-primary">Assinar Newsletter</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. BARRA DE DESTAQUE DE ÚLTIMA HORA -->
+    <div class="breaking-news">
+        <span class="breaking-label">ÚLTIMAS NOTÍCIAS</span>
+        <span class="breaking-text">* {{news[0].title}}*</span>
+    </div>
+
+    <main>
+        <!-- 3. SEÇÃO PRINCIPAL / DESTAQUE DA CAPA -->
+        <section id="hero">
+            <video class="hero-video-bg" autoplay loop muted playsinline>
+                <source src="../static/media/dailynoteshero.mp4" type="video/mp4">
+            </video>
+            <div class="hero-overlay"></div>
+
+            <div class="container hero-grid">
+                <!-- Transformado em card clicável -->
+                <article class="top-story card-clickable">
+                    <div>
+                        <span class="badge badge-world">MUNDO / POLÍTICA</span>
+                    </div>
+                    <h1><a href="{{ url_for('news', id=news[1].id) }}" class="card-link">{{ news[1].title }}</a></h1>
+                    <p>Reunião em Genebra estabelece novas diretrizes para o comércio internacional e transição digital nos próximos cinco anos.</p>
+                    <div class="metadata">Há 2 horas | Por Redação DailyNotes</div>
+                </article>
+
+                <aside class="secondary-grid">
+                    <article class="secondary-item card-clickable">
+                        <div><span class="badge badge-eco">ECONOMIA</span></div>
+                        <h3><a href="{{ url_for('news', id=news[3].id) }}" class="card-link">{{news[3].title}}</a></h3>
+                        <div class="metadata">Há 3 horas</div>
+                    </article>
+                    
+                    <article class="secondary-item card-clickable">
+                        <div><span class="badge badge-tech">TECNOLOGIA</span></div>
+                        <h3><a href="{{ url_for('news', id=news[2].id) }}" class="card-link"> {{news[2].title}} </a></h3>
+                        <div class="metadata">Há 5 horas</div>
+                    </article>
+
+                    <article class="secondary-item card-clickable">
+                        <div><span class="badge badge-society">SOCIEDADE</span></div>
+                        <h3><a href="{{ url_for('news', id=news[4].id) }}" class="card-link">{{ news[4].title }}</a></h3>
+                        <div class="metadata">Há 6 horas</div>
+                    </article>
+                </aside>
+            </div>
+        </section>
+
+        <!-- 4. SEÇÃO: EM FOCO -->
+        <section id="em-foco">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-title">EM FOCO (Reportagens investigativas e análises aprofundadas)</span>
+                </div>
+                
+                <div class="em-foco-grid">
+                    <article class="card card-clickable">
+                        <div class="card-img-placeholder" aria-label="Imagem representativa de monitoramento florestal por satélite">
+                            <svg width="100%" height="100%" preserveAspectRatio="none" style="position:absolute; inset:0; fill:#2A2A2A;"><rect width="100%" height="100%"/></svg>
+                        </div>
+                        <div>
+                            <span class="badge badge-science">CIÊNCIA & AMBIENTE</span>
+                            <h3><a href="{{ url_for('news', id=news[6].id) }}" class="card-link">{{ news[6].title }}</a></h3>
+                            <p>Especialistas analisam os avanços tecnológicos na exploração espacial e os desafios restantes.</p>
+                        </div>
+                    </article>
+
+                    <article class="card card-clickable">
+                        <div class="card-img-placeholder" aria-label="Imagem representativa do consumo de arte digital">
+                            <svg width="100%" height="100%" preserveAspectRatio="none" style="position:absolute; inset:0; fill:#2A2A2A;"><rect width="100%" height="100%"/></svg>
+                        </div>
+                        <div>
+                            <span class="badge badge-culture">CULTURA</span>
+                            <h3><a href="{{ url_for('news', id=news[5].id) }}" class="card-link">{{ news[5].title }}</a></h3>
+                            <p>Uma análise sobre a evolução do acesso à cultura no ambiente digital.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. SEÇÃO: MAIS LIDAS & FEED DE NOTÍCIAS -->
+        <section id="feed-mais-lidas">
+            <div class="container feed-grid">
+                
+                <div class="feed-column">
+                    <div class="section-header">
+                        <span class="section-title">ÚLTIMAS ATUALIZAÇÕES</span>
+                    </div>
+                    <div class="feed-list">
+
+                        {% for i in range(7, 12) %}
+                        <article class="feed-item card-clickable">
+                            <p><a href="{{ url_for('news', id=news[i].id) }}" class="card-link">* {{ news[i].title }}*</a></p>
+                        </article>
+                        {% endfor %}
+
+                        
+                    </div>
+                </div>
+
+                <div class="mais-lidas-column">
+                    <div class="section-header">
+                        <span class="section-title">MAIS LIDAS</span>
+                    </div>
+                    <div class="mais-lidas-list">
+                        <article class="mais-lidas-item card-clickable">
+                            <h3><a href="{{ url_for('news', id=news[5].id) }}" class="card-link">{{ news[5].title }}</a></h3>
+                        </article>
+                        <article class="mais-lidas-item card-clickable">
+                            <h3><a href="{{ url_for('news', id=news[6].id) }}" class="card-link">{{ news[6].title }}</a></h3>
+                        </article>
+                        <article class="mais-lidas-item card-clickable">
+                            <h3><a href="{{ url_for('news', id=news[10].id) }}" class="card-link">{{ news[10].title }}</a></h3>
+                        </article>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <!-- 7. SEÇÃO: OPINIÃO & COLUNISTAS -->
+        <section id="opiniao">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-title">COLUNAS & OPINIÃO</span>
+                </div>
+                
+                <div class="opiniao-grid">
+                    <article class="columnist card-clickable">
+                        <div class="metadata">{{ news[6].author }} – Analista Internacional</div>
+                        <h3><a href="{{ url_for('news', id=news[6].id) }}" class="card-link">"{{ news[6].title }}"</a></h3>
+                    </article>
+                    
+                    <article class="columnist card-clickable">
+                        <div class="metadata">{{ news[7].author }} – Economista</div>
+                        <h3><a href="{{ url_for('news', id=news[7].id) }}" class="card-link">"{{ news[7].title }}"</a></h3>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. SEÇÃO DE CAPTURA: NEWSLETTER -->
+        <section id="newsletter" class="newsletter-section">
+            <div class="container">
+                <h2>Mantenha-se informado com o DailyNotes</h2>
+                <p class="description">Receba todas as manhãs a nossa seleção com as notícias mais importantes, análises completas e destaques do dia direto na sua caixa de entrada.</p>
+                
+                <form class="newsletter-form" action="{{ url_for('home') }}" method="post">
+                    <div class="input-group">
+                        <input type="email" placeholder="Digite seu e-mail" name="email" aria-label="Digite seu e-mail" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary">Inscrever-se Gratuitamente</button>
+                    <p class="privacy-note">Respeitamos sua privacidade. Cancele a inscrição a qualquer momento.</p>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- 9. RODAPÉ -->
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                
+                <div class="footer-logo-desc">
+                    <div class="logo">DailyNotes</div>
+                    <p>Jornalismo independente, focado na precisão dos fatos e no compromisso com a verdade.</p>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Links Institucionais & Transparência</h3>
+                    <ul>
+                        <li><a href="{{ url_for('about') }}">Sobre Nós</a></li>
+                        <li><a href="#">Linha Editorial / Princípios Jornalísticos</a></li>
+                        <li><a href="#">Fale Conosco / Redação</a></li>
+                        <li><a href="#">Anuncie Conosco</a></li>
+                        <li><a href="#">Trabalhe Conosco</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-links">
+                    <h3>Links Legais</h3>
+                    <ul>
+                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                        <li><a href="#">Código de Ética</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom">
+                <div class="copyright">Copyright: © 2026 DailyNotes. Todos os direitos reservados.</div>
+                <div class="social-links">
+                    <a href="#" aria-label="X / Twitter">[X / Twitter]</a>
+                    <a href="#" aria-label="LinkedIn">[LinkedIn]</a>
+                    <a href="#" aria-label="Instagram">[Instagram]</a>
+                    <a href="#" aria-label="YouTube">[YouTube]</a>
+                    <a href="#" aria-label="Spotify">[Spotify]</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT SIMPLES PARA MENU MOBILE -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const menuBtn = document.getElementById('menuBtn');
+            const mainNav = document.getElementById('mainNav');
+            const navUtils = document.getElementById('navUtils');
+
+            menuBtn.addEventListener('click', () => {
+                const isExpanded = menuBtn.getAttribute('aria-expanded') === 'true';
+                menuBtn.setAttribute('aria-expanded', !isExpanded);
+                
+                mainNav.classList.toggle('show-mobile');
+                navUtils.classList.toggle('show-mobile');
+                
+                if(!isExpanded) {
+                    menuBtn.innerHTML = '✕';
+                } else {
+                    menuBtn.innerHTML = '☰';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

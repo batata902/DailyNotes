@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title>DailyNotes - Sobre Nós</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-top">
+                <div class="logo"><a href="{{ url_for('home') }}">DailyNotes</a></div>
+                <div class="tagline">Informação precisa, análises profundas e os fatos do dia.</div>
+                <button class="menu-toggle" aria-label="Abrir menu" id="menuBtn">☰</button>
+            </div>
+            <div class="nav-wrapper">
+                <nav class="main-nav" id="mainNav">
+                    <ul>
+                        {% for category in categories %}
+                        <li><a href="{{ url_for('category', id=category.id) }}">{{ category.title }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </nav>
+                <div class="nav-utils" id="navUtils">
+                    <a href="{{ url_for('search') }}" class="btn btn-secondary" aria-label="Buscar">Busca</a>
+                    <a href="#newsletter" class="btn btn-primary">Assinar Newsletter</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="article-container" style="padding-bottom: var(--spacing-8);">
+            <h1 style="border-bottom: 2px solid var(--brand-highlight); padding-bottom: var(--spacing-2); display: inline-block;">Sobre o DailyNotes</h1>
+            
+            <div class="article-body">
+                <p>O <strong>DailyNotes</strong> nasceu da necessidade de um jornalismo direto, sem excessos. Focamos na precisão dos fatos, entregando análises profundas sobre o que realmente importa no Brasil e no mundo.</p>
+                
+                <h2>Nossos Princípios</h2>
+                <ul>
+                    <li style="margin-bottom: var(--spacing-2);"><strong>1. Independência:</strong> Não possuímos vínculos com conglomerados corporativos ou partidos políticos. Nossa única subordinação é à verdade e aos nossos leitores.</li>
+                    <li style="margin-bottom: var(--spacing-2);"><strong>2. Brutalismo Editorial:</strong> Acreditamos que o design não deve ofuscar a notícia. Nossa interface reflete nossa linha editorial: clara, reta, objetiva e livre de distrações visuais desnecessárias.</li>
+                    <li style="margin-bottom: var(--spacing-2);"><strong>3. Agilidade sem Pressa:</strong> Noticiamos o imediato, mas não abrimos mão da verificação rigorosa de múltiplas fontes. A pressa do furo nunca supera o rigor da apuração.</li>
+                </ul>
+                
+                <h2>Fale com a Redação</h2>
+                <p>Para enviar pautas, denúncias ou sugestões, entre em contato através do e-mail: <strong>redacao@dailynotes.com</strong>.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-logo-desc">
+                    <div class="logo">DailyNotes</div>
+                    <p>Jornalismo independente, focado na precisão dos fatos e no compromisso com a verdade.</p>
+                </div>
+                <div class="footer-links">
+                    <h3>Links Institucionais & Transparência</h3>
+                    <ul>
+                        <li><a href="{{ url_for('about') }}">Sobre Nós</a></li>
+                        <li><a href="#">Linha Editorial / Princípios Jornalísticos</a></li>
+                        <li><a href="#">Fale Conosco / Redação</a></li>
+                        <li><a href="#">Anuncie Conosco</a></li>
+                        <li><a href="#">Trabalhe Conosco</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h3>Links Legais</h3>
+                    <ul>
+                        <li><a href="#">Termos de Uso</a></li>
+                        <li><a href="#">Política de Privacidade</a></li>
+                        <li><a href="#">Código de Ética</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="copyright">Copyright: © 2026 DailyNotes. Todos os direitos reservados.</div>
+                <div class="social-links">
+                    <a href="#" aria-label="X / Twitter">[X / Twitter]</a>
+                    <a href="#" aria-label="LinkedIn">[LinkedIn]</a>
+                    <a href="#" aria-label="Instagram">[Instagram]</a>
+                    <a href="#" aria-label="YouTube">[YouTube]</a>
+                    <a href="#" aria-label="Spotify">[Spotify]</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

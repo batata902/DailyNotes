@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DailyNotes - Painel Administrativo</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <style>
+        /* Estilos do Modal de Visualização/Edição (Pode mover para admin.css) */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(10, 10, 10, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
+
+        .modal-content {
+            width: 100%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background-color: #161616; /* var(--bg-surface) */
+            border: 1px solid #2A2A2A; /* var(--border-color) */
+            padding: 24px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid #2A2A2A;
+            padding-bottom: 16px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .btn-sm {
+            min-height: 32px;
+            padding: 0 16px;
+            font-size: 12px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header do Painel -->
+    <header class="admin-header">
+        <div class="container admin-header-content">
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <div class="logo"><a href="{{ url_for('home') }}">DailyNotes</a></div>
+                <span class="admin-badge">Painel Interno</span>
+            </div>
+            <div class="text-secondary" style="font-size: 14px;">Olá, Administrador</div>
+        </div>
+    </header>
+
+    <div class="admin-layout">
+        <!-- Menu Lateral / Abas -->
+        <aside class="admin-sidebar">
+            <button class="nav-tab active" onclick="switchTab('categorias', event)">Categorias</button>
+            <button class="nav-tab" onclick="switchTab('noticias', event)">Notícias</button>
+            <button class="nav-tab" onclick="switchTab('assinantes', event)">Assinantes Newsletter</button>
+            <a href="{{ url_for('logout') }}" class="nav-tab logout">Sair da Conta</a>
+        </aside>
+
+        <!-- Área de Conteúdo Dinâmico -->
+        <main class="admin-content container">
+
+            <!-- SEÇÃO: CATEGORIAS -->
+            <div id="categorias" class="tab-pane active">
+                <h1>Gerenciar Categorias</h1>
+                
+                <div class="admin-grid">
+                    <div class="admin-card">
+                        <h2>Cadastrar Categoria</h2>
+                        <form action="{{ url_for('newcat') }}" method="post">
+                            <div class="input-group">
+                                <label for="cat-titulo">Título da Categoria</label>
+                                <input type="text" id="cat-titulo" placeholder="Ex: Tecnologia, Esportes..." name="title" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Salvar Categoria</button>
+                        </form>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2>Categorias Cadastradas</h2>
+                        <div class="data-list">
+                            {% for category in categories %}
+                            <div class="data-item">
+                                <span>{{ category.title }}</span>
+                                
+                                <a href="{{ url_for('delcat', id=category.id) }}" class="btn btn-danger" onclick="return confirm('Tem certeza que deseja deletar esta categoria?')">Apagar</a>
+                                
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO: NOTÍCIAS -->
+            <div id="noticias" class="tab-pane">
+                <h1>Gerenciar Notícias</h1>
+                
+                <div class="admin-grid" style="grid-template-columns: 1fr;">
+                    <div class="admin-card">
+                        <h2>Cadastrar Nova Notícia</h2>
+                        <form action="{{ url_for('news') }}" method="post">
+                            <div class="input-group">
+                                <label for="noticia-cat">Categoria Associada</label>
+                                <select id="noticia-cat" name="category" required>
+                                    <option value="" disabled selected>Selecione uma categoria</option>
+                                    <!-- Você pode iterar suas categorias aqui com Jinja2 -->
+                                    {% for category in categories %}
+                                    <option value="{{ category.id }}">{{ category.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label for="noticia-titulo">Título</label>
+                                <input type="text" id="noticia-titulo" name="title" placeholder="Título principal da matéria" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="noticia-autor">Autor</label>
+                                <input type="text" id="noticia-autor" name="author" placeholder="Nome do jornalista ou redação" required>
+                            </div>
+                            <div class="input-group">
+                                <label for="noticia-corpo">Corpo da Matéria</label>
+                                <textarea id="noticia-corpo" name="body" placeholder="Escreva o texto completo da notícia aqui..." required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Publicar Notícia</button>
+                        </form>
+                    </div>
+
+                    <div class="admin-card">
+                        <h2>Todas as Notícias Cadastradas</h2>
+                        <div class="data-list">
+                            $ITEMS$
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEÇÃO: ASSINANTES NEWSLETTER -->
+            <div id="assinantes" class="tab-pane">
+                <h1>Assinantes da Newsletter</h1>
+                
+                <div class="admin-card" style="max-width: 800px;">
+                    <h2>Lista de E-mails Cadastrados</h2>
+                    <div class="data-list" style="margin-top: var(--spacing-2);">
+                        {% for s in subscribers %}
+                        <div class="data-item"><span>{{ s.email }}</span><span class="data-meta">Ativo</span></div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE VISUALIZAÇÃO E EDIÇÃO DE NOTÍCIA -->
+    <div id="newsModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Visualizar Notícia</h2>
+                <button class="btn btn-secondary btn-sm" onclick="closeNewsModal()">✕ Fechar</button>
+            </div>
+            
+            <!-- Modo de Visualização -->
+            <div id="viewMode">
+                <div style="margin-bottom: 16px;">
+                    <span class="data-meta">Categoria: <span id="viewCat" style="color: #FF4D4D;"></span> | Autor: <span id="viewAuthor"></span></span>
+                </div>
+                <h3 id="viewTitle" style="font-size: 24px; margin-bottom: 24px;"></h3>
+                <p id="viewBody" style="color: #A0A0A0; white-space: pre-wrap; margin-bottom: 32px; font-size: 16px; line-height: 1.8;"></p>
+                
+                <!-- Botão Editar dentro da visualização -->
+                <button class="btn btn-primary" onclick="toggleEditMode(true)">Editar Notícia</button>
+            </div>
+
+            <!-- Modo de Edição (Formulário Oculto Inicialmente) -->
+            <form id="editMode" style="display: none;" method="post" action="{{ url_for('edit_new') }}">
+                <!-- Input hidden para o ID da notícia -->
+                <input type="hidden" id="edit-id" name="id">
+                
+                <div class="input-group">
+                    <label for="edit-cat">Categoria Associada</label>
+                    <select id="edit-cat" name="categoria" required>
+                        <!-- Iterar categorias disponíveis -->
+                        {% for category in categories %}
+                        <option value="{{ category.title }}">{{ category.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="edit-title">Título</label>
+                    <input type="text" id="edit-title" name="title" required>
+                </div>
+                <div class="input-group">
+                    <label for="edit-author">Autor</label>
+                    <input type="text" id="edit-author" name="author" required>
+                </div>
+                <div class="input-group">
+                    <label for="edit-body">Corpo da Matéria</label>
+                    <textarea id="edit-body" name="body" style="min-height: 200px;" required></textarea>
+                </div>
+                
+                <div class="btn-group" style="margin-top: 24px;">
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                    <button type="button" class="btn btn-secondary" onclick="toggleEditMode(false)">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Script para Alternar Abas e Interações -->
+    <script>
+        // Função das abas do menu
+        function switchTab(tabId, event) {
+            document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+        }
+
+        // Funções do Modal de Notícias
+        function openNewsModal(buttonElement) {
+            // Pega os dados do botão clicado
+            const id = buttonElement.getAttribute('data-id');
+            const title = buttonElement.getAttribute('data-title');
+            const cat = buttonElement.getAttribute('data-cat');
+            const author = buttonElement.getAttribute('data-author');
+            const body = buttonElement.getAttribute('data-body');
+
+            // Preenche o Modo Visualização
+            document.getElementById('viewTitle').innerText = title;
+            document.getElementById('viewCat').innerText = cat;
+            document.getElementById('viewAuthor').innerText = author;
+            document.getElementById('viewBody').innerText = body;
+
+            // Preenche o Modo Edição
+            document.getElementById('edit-id').value = id;
+            document.getElementById('edit-title').value = title;
+            document.getElementById('edit-author').value = author;
+            document.getElementById('edit-body').value = body;
+
+            // Seleciona a categoria correta no <select> de edição
+            const selectCat = document.getElementById('edit-cat');
+            for(let i = 0; i < selectCat.options.length; i++) {
+                if(selectCat.options[i].value === cat) {
+                    selectCat.selectedIndex = i;
+                    break;
+                }
+            }
+
+            // Garante que o modal abra no modo visualização
+            toggleEditMode(false);
+            
+            // Exibe o modal
+            document.getElementById('newsModal').style.display = 'flex';
+        }
+
+        function closeNewsModal() {
+            document.getElementById('newsModal').style.display = 'none';
+        }
+
+        function toggleEditMode(isEditing) {
+            const viewMode = document.getElementById('viewMode');
+            const editMode = document.getElementById('editMode');
+            const modalTitle = document.getElementById('modalTitle');
+
+            if (isEditing) {
+                viewMode.style.display = 'none';
+                editMode.style.display = 'block';
+                modalTitle.innerText = 'Editar Notícia';
+            } else {
+                viewMode.style.display = 'block';
+                editMode.style.display = 'none';
+                modalTitle.innerText = 'Visualizar Notícia';
+            }
+        }
+    </script>
+</body>
+</html>
