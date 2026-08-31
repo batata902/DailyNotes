@@ -1,4 +1,4 @@
-from app import app
+from app import app, seed_database
 from app.models import db
 
 from flask import render_template, render_template_string, redirect, make_response, request, url_for
@@ -125,22 +125,16 @@ def news():
 
             categories: list[dict[str, str]] = [dict(row) for row in query_c]
 
-            c_string: str = ''
-            for c in categories:
-                c_string += f"<li><a href=\"{url_for('category', id=c['id'])}\">{ c['title'] }</a></li>"
-
             new = cur.execute(f'SELECT * FROM news WHERE id={new_id};').fetchone()
 
             if not new:
                 return 'Notícia não encontrada', 404
 
-        return render_template_string(
-            open(
-                'app/templates/noticia.html', 'r', encoding='utf-8'
-                ).read().replace('$BODY$', str(new[2])),
-                title=new[1],
-                author=new[3],
-                categories=categories
+        return render_template(
+            'noticia.html',
+            title=new['title'],
+            author=new['author'],
+            categories=categories
         )
     
     new_data: dict[str, str] = request.form.to_dict()
@@ -271,12 +265,27 @@ def admin():
 
     template = template.replace('$ITEMS$', item)
 
-    return render_template_string(
-        template,
-        subscribers=subscribers,
-        categories=categories,
-        news=news_
-        )
+    try:
+        return render_template_string(
+            template,
+            subscribers=subscribers,
+            categories=categories,
+            news=news_
+            )
+    except:
+        return redirect(url_for('reset_news'))
+
+
+@app.route('/ctfemergency/resetnews') # Resetamos as news se o ssti ocasionar erro permanente no painel de admin
+def reset_news():
+    with db() as (conn, cur):
+        cur.execute('DELETE FROM news');
+        conn.commit()
+
+    seed_database()
+
+    return redirect(url_for('admin'))
+
 
 @app.route('/logout')
 @login_required

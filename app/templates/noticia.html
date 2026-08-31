@@ -45,7 +45,9 @@
             <img src="{{ url_for('static', filename='media/imagem.jpg') }}" class="card-img-placeholder" alt="breaking news" style="height: 400px; margin-bottom: var(--spacing-4);">
             
             <div class="article-body">
-                $BODY$
+                {% for c in categories %}
+                <li><a href="{url_for('category', id=c.id)}">{ c.title }</a></li>
+                {% endfor %}
             </div>
         </article>
     </main>
