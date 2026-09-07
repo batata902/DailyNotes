@@ -134,6 +134,7 @@ def news():
             'noticia.html',
             title=new['title'],
             author=new['author'],
+            body=new['body'],
             categories=categories
         )
     
